@@ -56,11 +56,11 @@ export default function Document() {
             min-height: 100dvh;
             overscroll-behavior-y: none;
           }
-          .atenea-bg {
+          .temis-bg {
             position: fixed;
             inset: 0;
             z-index: -2;
-            background-image: url('https://commons.wikimedia.org/wiki/Special:FilePath/Atena-Giustiniani---Vatican.jpg');
+            background-image: url('https://commons.wikimedia.org/wiki/Special:FilePath/Temida,%20Gdansk%20Court.jpg');
             background-size: cover;
             background-position: 78% center;
             background-repeat: no-repeat;
@@ -68,7 +68,7 @@ export default function Document() {
             filter: saturate(1.05) contrast(1.02);
             pointer-events: none;
           }
-          .atenea-veil {
+          .temis-veil {
             position: fixed;
             inset: 0;
             z-index: -1;
@@ -79,7 +79,7 @@ export default function Document() {
             pointer-events: none;
           }
           @media (max-width: 640px) {
-            .atenea-bg { background-position: 68% center; opacity: 0.17; }
+            .temis-bg { background-position: 68% center; opacity: 0.17; }
           }
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }
@@ -118,8 +118,8 @@ export default function Document() {
         `}</style>
       </Head>
       <body className="bg-deep-950 text-slate-100 font-sans min-h-screen">
-        <div className="atenea-bg" aria-hidden="true" />
-        <div className="atenea-veil" aria-hidden="true" />
+        <div className="temis-bg" aria-hidden="true" />
+        <div className="temis-veil" aria-hidden="true" />
         <Main />
         <NextScript />
       </body>
