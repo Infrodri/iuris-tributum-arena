@@ -1,14 +1,18 @@
 import { useRef, useState } from "react";
 import { legalCases } from "../../lib/gameData";
+import { shuffled } from "../../lib/shuffle";
 import { buzz, blip } from "../arena";
 
 export default function CasosGame({ onFinish }) {
+  const [deck] = useState(() =>
+    shuffled(legalCases.map((c) => ({ ...c, options: shuffled(c.options) })))
+  );
   const [index, setIndex] = useState(0);
   const [answeredIdx, setAnsweredIdx] = useState(null);
   const [points, setPoints] = useState(0);
   const startRef = useRef(Date.now());
 
-  const c = legalCases[index];
+  const c = deck[index];
 
   function choose(idx) {
     if (answeredIdx !== null) return;
@@ -24,7 +28,7 @@ export default function CasosGame({ onFinish }) {
   }
 
   function next() {
-    if (index < legalCases.length - 1) {
+    if (index < deck.length - 1) {
       setIndex((i) => i + 1);
       setAnsweredIdx(null);
     } else {
@@ -36,7 +40,7 @@ export default function CasosGame({ onFinish }) {
   return (
     <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
       <div className="flex items-center gap-1.5 justify-center" aria-hidden>
-        {legalCases.map((_, i) => (
+        {deck.map((_, i) => (
           <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-5 bg-mint-400" : i === index ? "w-7 bg-gold-400 anim-glow" : "w-3 bg-white/15"}`} />
         ))}
       </div>
@@ -44,7 +48,7 @@ export default function CasosGame({ onFinish }) {
         <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-mint-500/25 to-royal-500/25 text-mint-300 border border-mint-400/25 font-bold uppercase tracking-wide truncate max-w-[70%]">
           {c.badge}
         </span>
-        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{legalCases.length}</span>
+        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{deck.length}</span>
       </div>
 
       <h3 className="text-[17px] sm:text-xl font-serif font-bold text-white leading-snug">{c.title}</h3>
@@ -78,7 +82,7 @@ export default function CasosGame({ onFinish }) {
         <span className="text-xs text-slate-300">Total <strong className="text-mint-300 font-mono text-base">{points}</strong></span>
         {answeredIdx !== null && (
           <button onClick={next} className="arena-btn flex-1 sm:flex-none px-6 rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
-            {index === legalCases.length - 1 ? "Ver mi resultado →" : "Siguiente caso →"}
+            {index === deck.length - 1 ? "Ver mi resultado →" : "Siguiente caso →"}
           </button>
         )}
       </div>

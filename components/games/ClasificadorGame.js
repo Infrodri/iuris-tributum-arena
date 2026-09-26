@@ -1,15 +1,17 @@
 import { useRef, useState } from "react";
 import { classifierItems } from "../../lib/gameData";
+import { shuffled } from "../../lib/shuffle";
 import { buzz, blip } from "../arena";
 
 export default function ClasificadorGame({ onFinish }) {
+  const [items] = useState(() => shuffled(classifierItems));
   const [index, setIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [points, setPoints] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const startRef = useRef(Date.now());
 
-  const item = classifierItems[index];
+  const item = items[index];
 
   function classify(type) {
     if (feedback) return;
@@ -26,7 +28,7 @@ export default function ClasificadorGame({ onFinish }) {
     setFeedback({ isCorrect, article: item.article, sanction: item.sanction, type: item.type });
 
     setTimeout(() => {
-      if (index < classifierItems.length - 1) {
+      if (index < items.length - 1) {
         setIndex((i) => i + 1);
         setFeedback(null);
       } else {
@@ -39,12 +41,12 @@ export default function ClasificadorGame({ onFinish }) {
   return (
     <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
       <div className="flex items-center gap-1.5 justify-center" aria-hidden>
-        {classifierItems.map((_, i) => (
+        {items.map((_, i) => (
           <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-4 bg-mint-400" : i === index ? "w-6 bg-gold-400 anim-glow" : "w-2.5 bg-white/15"}`} />
         ))}
       </div>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-400 font-mono">{index + 1}/{classifierItems.length}</span>
+        <span className="text-slate-400 font-mono">{index + 1}/{items.length}</span>
         <span className="font-black text-gold-300">★ {correctCount} aciertos</span>
       </div>
 

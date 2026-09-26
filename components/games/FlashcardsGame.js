@@ -1,14 +1,16 @@
 import { useRef, useState } from "react";
 import { flashcardsData } from "../../lib/gameData";
+import { shuffled } from "../../lib/shuffle";
 
 export default function FlashcardsGame({ onFinish }) {
+  const [cards] = useState(() => shuffled(flashcardsData));
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [seen, setSeen] = useState(() => new Set());
   const startRef = useRef(Date.now());
 
-  const card = flashcardsData[index];
-  const isLast = index === flashcardsData.length - 1;
+  const card = cards[index];
+  const isLast = index === cards.length - 1;
 
   function flip() {
     setFlipped((f) => !f);
@@ -64,7 +66,7 @@ export default function FlashcardsGame({ onFinish }) {
           ←
         </button>
         <span className="text-xs font-black font-mono text-gold-300 bg-white/[0.06] px-4 py-2.5 rounded-xl border border-white/10">
-          {index + 1} / {flashcardsData.length} · {seen.size} vistas
+          {index + 1} / {cards.length} · {seen.size} vistas
         </span>
         <button onClick={next} className="arena-btn flex-1 max-w-[180px] rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
           {isLast ? "Finalizar ✓" : "Siguiente →"}

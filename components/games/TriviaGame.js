@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { triviaDatabase } from "../../lib/gameData";
+import { shuffled } from "../../lib/shuffle";
 import { buzz, blip, streakMsg } from "../arena";
 
 export default function TriviaGame({ onFinish }) {
+  const [deck] = useState(() =>
+    shuffled(triviaDatabase.map((q) => ({ ...q, options: shuffled(q.options) })))
+  );
   const [index, setIndex] = useState(0);
   const [locked, setLocked] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -13,7 +17,7 @@ export default function TriviaGame({ onFinish }) {
   const startRef = useRef(Date.now());
   const timerRef = useRef(null);
 
-  const q = triviaDatabase[index];
+  const q = deck[index];
   const msg = streakMsg(streak);
 
   useEffect(() => {
@@ -58,7 +62,7 @@ export default function TriviaGame({ onFinish }) {
   }
 
   function next() {
-    if (index < triviaDatabase.length - 1) {
+    if (index < deck.length - 1) {
       setIndex((i) => i + 1);
     } else {
       const totalTime = Math.round((Date.now() - startRef.current) / 1000);
@@ -71,7 +75,7 @@ export default function TriviaGame({ onFinish }) {
   return (
     <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
       <div className="flex items-center gap-1.5 justify-center" aria-hidden>
-        {triviaDatabase.map((_, i) => (
+        {deck.map((_, i) => (
           <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-5 bg-mint-400" : i === index ? "w-7 bg-gold-400 anim-glow" : "w-3 bg-white/15"}`} />
         ))}
       </div>
@@ -80,7 +84,7 @@ export default function TriviaGame({ onFinish }) {
         <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-royal-500/25 to-gold-500/20 text-gold-200 border border-gold-500/25 font-bold uppercase tracking-wide truncate max-w-[45%]">
           {q.tag}
         </span>
-        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{triviaDatabase.length}</span>
+        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{deck.length}</span>
         <span className={`px-3 py-1.5 rounded-full font-mono font-black shrink-0 ${timeLeft <= 5 ? "bg-coral-500/20 text-coral-400 border border-coral-500/40" : "bg-gold-500/15 text-gold-300 border border-gold-500/25"}`}>{Math.ceil(timeLeft)}s</span>
       </div>
 
@@ -137,7 +141,7 @@ export default function TriviaGame({ onFinish }) {
         <span className="text-xs text-slate-300">Total <strong className="text-mint-300 font-mono text-base">{points}</strong></span>
         {answered && (
           <button onClick={next} className="arena-btn flex-1 sm:flex-none px-6 rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
-            {index === triviaDatabase.length - 1 ? "Ver mi resultado →" : "Siguiente →"}
+            {index === deck.length - 1 ? "Ver mi resultado →" : "Siguiente →"}
           </button>
         )}
       </div>
