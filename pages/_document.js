@@ -62,9 +62,9 @@ export default function Document() {
             z-index: -2;
             background-image: url('/temis.jpg'), url('https://images.unsplash.com/photo-1760172593315-33156db48b79?q=80&w=1200&auto=format&fit=crop');
             background-size: cover;
-            background-position: 78% center;
+            background-position: center 30%;
             background-repeat: no-repeat;
-            opacity: 0.3;
+            opacity: 0.55;
             filter: saturate(1.05) contrast(1.02);
             pointer-events: none;
           }
@@ -73,13 +73,13 @@ export default function Document() {
             inset: 0;
             z-index: -1;
             background:
-              linear-gradient(180deg, rgba(11,6,32,0.72) 0%, rgba(11,6,32,0.55) 35%, rgba(11,6,32,0.88) 100%),
-              radial-gradient(700px 420px at 50% 0%, rgba(139,92,246,0.28), transparent 65%),
-              radial-gradient(500px 500px at 50% 115%, rgba(16,185,129,0.14), transparent 60%);
+              linear-gradient(180deg, rgba(11,6,32,0.55) 0%, rgba(11,6,32,0.32) 40%, rgba(11,6,32,0.72) 100%),
+              radial-gradient(700px 420px at 50% 0%, rgba(139,92,246,0.22), transparent 65%),
+              radial-gradient(500px 500px at 50% 115%, rgba(16,185,129,0.12), transparent 60%);
             pointer-events: none;
           }
           @media (max-width: 640px) {
-            .temis-bg { background-position: 68% center; opacity: 0.22; }
+            .temis-bg { background-position: center 25%; opacity: 0.42; }
           }
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }
