@@ -102,6 +102,7 @@ export default function Home() {
                 Entrar a competir →
               </button>
             </form>
+            <p className="text-[10px] text-slate-500">Fondo: Atenea Giustiniani · Museos Vaticanos (Wikimedia Commons)</p>
           </div>
         </main>
       </>

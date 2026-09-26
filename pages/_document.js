@@ -56,6 +56,31 @@ export default function Document() {
             min-height: 100dvh;
             overscroll-behavior-y: none;
           }
+          .atenea-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-image: url('https://commons.wikimedia.org/wiki/Special:FilePath/Atena-Giustiniani---Vatican.jpg');
+            background-size: cover;
+            background-position: 78% center;
+            background-repeat: no-repeat;
+            opacity: 0.24;
+            filter: saturate(1.05) contrast(1.02);
+            pointer-events: none;
+          }
+          .atenea-veil {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+              linear-gradient(180deg, rgba(11,6,32,0.72) 0%, rgba(11,6,32,0.55) 35%, rgba(11,6,32,0.88) 100%),
+              radial-gradient(700px 420px at 50% 0%, rgba(139,92,246,0.28), transparent 65%),
+              radial-gradient(500px 500px at 50% 115%, rgba(16,185,129,0.14), transparent 60%);
+            pointer-events: none;
+          }
+          @media (max-width: 640px) {
+            .atenea-bg { background-position: 68% center; opacity: 0.17; }
+          }
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }
           .glass-panel {
@@ -93,6 +118,8 @@ export default function Document() {
         `}</style>
       </Head>
       <body className="bg-deep-950 text-slate-100 font-sans min-h-screen">
+        <div className="atenea-bg" aria-hidden="true" />
+        <div className="atenea-veil" aria-hidden="true" />
         <Main />
         <NextScript />
       </body>
