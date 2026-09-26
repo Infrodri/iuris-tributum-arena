@@ -91,6 +91,13 @@ export default function Document() {
             border: 1px solid rgba(251,191,36,0.16);
             box-shadow: 0 12px 40px rgba(0,0,0,0.45);
           }
+          .glass-soft {
+            background: linear-gradient(150deg, rgba(27,21,71,0.55) 0%, rgba(11,6,32,0.65) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(251,191,36,0.16);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+          }
           .arena-title {
             background: linear-gradient(92deg, #FEF3C7 0%, #FBBF24 35%, #F59E0B 60%, #C4B5FD 100%);
             -webkit-background-clip: text;

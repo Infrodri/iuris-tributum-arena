@@ -117,7 +117,7 @@ export default function Docente() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="glass-panel rounded-3xl p-5 border border-gold-500/25 text-center space-y-3 anim-rise">
+          <div className="glass-soft rounded-3xl p-5 border border-gold-500/25 text-center space-y-3 anim-rise">
             <div className="bg-white p-3 rounded-2xl inline-block shadow-card">
               {qrSrc && <img src={qrSrc} alt="QR de la sala" className="w-36 h-36 sm:w-44 sm:h-44" />}
             </div>
@@ -128,8 +128,8 @@ export default function Docente() {
             <p className="text-[11px] text-slate-400 break-all font-mono">{joinUrl}</p>
           </div>
 
-          <div className="md:col-span-2 glass-panel rounded-3xl border border-deep-700/80 overflow-hidden">
-            <div className="grid grid-cols-12 bg-deep-900 px-4 py-3 text-[11px] font-bold uppercase text-slate-400 border-b border-deep-800">
+          <div className="md:col-span-2 glass-soft rounded-3xl border border-white/10 overflow-hidden">
+            <div className="grid grid-cols-12 bg-white/[0.06] px-4 py-3 text-[11px] font-bold uppercase text-slate-300 border-b border-white/10">
               <div className="col-span-2 text-center">Puesto</div>
               <div className="col-span-6">Estudiante</div>
               <div className="col-span-2 text-center">Tiempo</div>
