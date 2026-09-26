@@ -85,11 +85,11 @@ export default function Document() {
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }
           .glass-panel {
-            background: linear-gradient(150deg, rgba(27,21,71,0.88) 0%, rgba(11,6,32,0.94) 100%);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: linear-gradient(150deg, rgba(27,21,71,0.55) 0%, rgba(11,6,32,0.65) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(251,191,36,0.16);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.35);
           }
           .glass-soft {
             background: linear-gradient(150deg, rgba(27,21,71,0.55) 0%, rgba(11,6,32,0.65) 100%);
