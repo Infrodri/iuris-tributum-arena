@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { getPusherClient, roomChannelName } from "../lib/pusherClient";
+import Credits from "../components/Credits";
 
 function randomRoomCode() {
   const words = ["LEY2492", "TRIBUTO", "FISCO", "AUDITORIA", "CONSULTA", "REPETICION", "BOLIVIA"];
@@ -159,6 +160,8 @@ export default function Docente() {
             <p className="text-2xl font-serif font-bold text-gold-400">{ranking[0].name}</p>
           </div>
         )}
+
+        <Credits />
       </main>
     </>
   );
