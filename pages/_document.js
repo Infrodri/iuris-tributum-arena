@@ -59,11 +59,11 @@ export default function Document() {
           .temis-bg {
             position: fixed;
             inset: 0;
-            z-index: -2;
-            background-image: url('/temis.jpg'), url('https://images.unsplash.com/photo-1760172593315-33156db48b79?q=80&w=1200&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center 30%;
-            background-repeat: no-repeat;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            z-index: 0;
             opacity: 0.55;
             filter: saturate(1.05) contrast(1.02);
             pointer-events: none;
@@ -71,7 +71,7 @@ export default function Document() {
           .temis-veil {
             position: fixed;
             inset: 0;
-            z-index: -1;
+            z-index: 1;
             background:
               linear-gradient(180deg, rgba(11,6,32,0.55) 0%, rgba(11,6,32,0.32) 40%, rgba(11,6,32,0.72) 100%),
               radial-gradient(700px 420px at 50% 0%, rgba(139,92,246,0.22), transparent 65%),
@@ -79,8 +79,9 @@ export default function Document() {
             pointer-events: none;
           }
           @media (max-width: 640px) {
-            .temis-bg { background-position: center 25%; opacity: 0.42; }
+            .temis-bg { object-position: center 25%; opacity: 0.42; }
           }
+          .temis-content { position: relative; z-index: 2; }
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }
           .glass-panel {
@@ -118,9 +119,11 @@ export default function Document() {
         `}</style>
       </Head>
       <body className="bg-deep-950 text-slate-100 font-sans min-h-screen">
-        <div className="temis-bg" aria-hidden="true" />
+        <img src="/temis.jpg" alt="" aria-hidden="true" className="temis-bg" />
         <div className="temis-veil" aria-hidden="true" />
-        <Main />
+        <div className="temis-content">
+          <Main />
+        </div>
         <NextScript />
       </body>
     </Html>
