@@ -60,11 +60,11 @@ export default function Document() {
             position: fixed;
             inset: 0;
             z-index: -2;
-            background-image: url('https://commons.wikimedia.org/wiki/Special:FilePath/Temida,%20Gdansk%20Court.jpg');
+            background-image: url('https://images.unsplash.com/photo-1760172593315-33156db48b79?q=80&w=1200&auto=format&fit=crop');
             background-size: cover;
             background-position: 78% center;
             background-repeat: no-repeat;
-            opacity: 0.24;
+            opacity: 0.3;
             filter: saturate(1.05) contrast(1.02);
             pointer-events: none;
           }
@@ -79,7 +79,7 @@ export default function Document() {
             pointer-events: none;
           }
           @media (max-width: 640px) {
-            .temis-bg { background-position: 68% center; opacity: 0.17; }
+            .temis-bg { background-position: 68% center; opacity: 0.22; }
           }
           * { touch-action: manipulation; }
           input, button { font-size: 16px; }

@@ -102,7 +102,7 @@ export default function Home() {
                 Entrar a competir →
               </button>
             </form>
-            <p className="text-[10px] text-slate-500">Fondo: Temis con balanza · Palacio de Justicia de Gdansk (Wikimedia Commons)</p>
+            <p className="text-[10px] text-slate-500">Fondo: Temis con balanza · Foto de Artan en Unsplash</p>
           </div>
         </main>
       </>
