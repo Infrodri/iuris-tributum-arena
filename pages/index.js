@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { GAME_MODES } from "../lib/gameData";
+import Credits from "../components/Credits";
 import TriviaGame from "../components/games/TriviaGame";
 import CasosGame from "../components/games/CasosGame";
 import ClasificadorGame from "../components/games/ClasificadorGame";
@@ -22,7 +23,7 @@ export default function Home() {
   const [room, setRoom] = useState("");
   const [mode, setMode] = useState(null);
   const [totalPoints, setTotalPoints] = useState(0);
-  const [lastResult, setLastResult] = useState(null);
+  const [finished, setFinished] = useState(null);
   const [sending, setSending] = useState(false);
   const [sessionEnded, setSessionEnded] = useState(null);
 
@@ -39,6 +40,8 @@ export default function Home() {
     channel.bind("session-reset", () => {
       setSessionEnded(null);
       setTotalPoints(0);
+      setFinished(null);
+      setMode(null);
     });
     return () => {
       channel.unbind_all();
@@ -55,8 +58,9 @@ export default function Home() {
 
   async function submitScore(points, timeSec) {
     setSending(true);
-    setTotalPoints((p) => p + points);
-    setLastResult({ mode, points, timeSec });
+    const newTotal = totalPoints + points;
+    setTotalPoints(newTotal);
+    setFinished({ mode, points, timeSec, total: newTotal });
     try {
       await fetch("/api/pusher/score", {
         method: "POST",
@@ -111,14 +115,17 @@ export default function Home() {
 
   if (sessionEnded) {
     return (
-      <main className="min-h-screen flex items-center justify-center px-4 py-10">
-        <div className="glass-panel max-w-md w-full rounded-3xl p-8 space-y-4 border border-gold-500/40 text-center">
-          <i className="ph-fill ph-trophy text-5xl text-gold-400"></i>
-          <h2 className="text-2xl font-serif font-bold text-white">Sesión Finalizada</h2>
-          {sessionEnded.winner && (
-            <p className="text-sm text-slate-300">Ganador(a) de la sala: <strong className="text-gold-400">{sessionEnded.winner}</strong></p>
-          )}
-          <p className="text-xs text-slate-500">Tu puntaje total en esta sesión: <strong className="text-emeraldLaw-400">{totalPoints}</strong></p>
+      <main className="min-h-[100dvh] flex items-center justify-center px-4 py-8">
+        <div className="max-w-md w-full space-y-4">
+          <div className="glass-panel w-full rounded-3xl p-8 space-y-4 border border-gold-500/40 text-center">
+            <i className="ph-fill ph-trophy text-5xl text-gold-400"></i>
+            <h2 className="text-2xl font-serif font-bold text-white">Sesión Finalizada</h2>
+            {sessionEnded.winner && (
+              <p className="text-sm text-slate-300">Ganador(a) de la sala: <strong className="text-gold-400">{sessionEnded.winner}</strong></p>
+            )}
+            <p className="text-xs text-slate-500">Tu puntaje total en esta sesión: <strong className="text-emeraldLaw-400">{totalPoints}</strong></p>
+          </div>
+          <Credits />
         </div>
       </main>
     );
@@ -138,6 +145,23 @@ export default function Home() {
     );
   }
 
+  if (!mode && finished) {
+    return (
+      <main className="min-h-[100dvh] px-4 py-6 max-w-xl mx-auto w-full space-y-4">
+        <div className="glass-panel rounded-3xl p-6 text-center space-y-2 anim-pop">
+          <p className="text-4xl">🏆</p>
+          <h2 className="arena-title text-2xl font-serif font-black">¡Juego completado!</h2>
+          <p className="text-sm text-slate-200">+{finished.points} pts en {GAME_MODES.find(m => m.id === finished.mode)?.label}</p>
+          <p className="text-xs text-slate-400">Tu total acumulado: <strong className="text-mint-300 font-mono text-base">★ {finished.total}</strong></p>
+          <button onClick={() => setFinished(null)} className="arena-btn w-full rounded-2xl font-black bg-gradient-to-r from-gold-300 via-gold-500 to-gold-600 text-ink-950 text-[16px] shadow-glow-gold active:scale-[0.98] transition">
+            Elegir otro modo →
+          </button>
+        </div>
+        <Credits />
+      </main>
+    );
+  }
+
   const modeArt = { trivia: "🎯", casos: "💼", clasificador: "⚖️", flashcards: "🃏" };
   return (
     <main className="min-h-[100dvh] px-4 py-6 max-w-xl mx-auto w-full">
@@ -146,12 +170,6 @@ export default function Home() {
         <h2 className="arena-title text-2xl font-serif font-black">Elige tu duelo</h2>
         <p className="text-xs text-slate-300">Total <strong className="text-mint-300 font-mono text-sm">★ {totalPoints} pts</strong> · suma en cada modo</p>
       </div>
-
-      {lastResult && (
-        <div className="mb-4 p-4 rounded-2xl border-2 border-mint-400/40 bg-mint-500/10 text-emerald-100 text-sm text-center anim-pop">
-          ¡+{lastResult.points} pts en {GAME_MODES.find(m => m.id === lastResult.mode)?.label}! Elige otro modo para seguir sumando.
-        </div>
-      )}
 
       <div className="grid grid-cols-1 gap-3 safe-bottom">
         {GAME_MODES.map((g) => (
