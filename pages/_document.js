@@ -60,7 +60,7 @@ export default function Document() {
             position: fixed;
             inset: 0;
             z-index: -2;
-            background-image: url('https://images.unsplash.com/photo-1760172593315-33156db48b79?q=80&w=1200&auto=format&fit=crop');
+            background-image: url('/temis.jpg'), url('https://images.unsplash.com/photo-1760172593315-33156db48b79?q=80&w=1200&auto=format&fit=crop');
             background-size: cover;
             background-position: 78% center;
             background-repeat: no-repeat;
