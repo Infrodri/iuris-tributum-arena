@@ -1,16 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { triviaDatabase } from "../../lib/gameData";
+import { buzz, blip, streakMsg } from "../arena";
 
 export default function TriviaGame({ onFinish }) {
   const [index, setIndex] = useState(0);
   const [locked, setLocked] = useState(false);
   const [selected, setSelected] = useState(null);
   const [points, setPoints] = useState(0);
+  const [streak, setStreak] = useState(0);
   const [timeLeft, setTimeLeft] = useState(20);
+  const [lastBonus, setLastBonus] = useState(0);
   const startRef = useRef(Date.now());
   const timerRef = useRef(null);
 
   const q = triviaDatabase[index];
+  const msg = streakMsg(streak);
 
   useEffect(() => {
     setTimeLeft(20);
@@ -39,7 +43,17 @@ export default function TriviaGame({ onFinish }) {
 
     if (idx >= 0 && q.options[idx].correct) {
       const bonus = Math.round(timeLeft * 5);
-      setPoints((p) => p + 100 + bonus);
+      const streakBonus = streak >= 2 ? streak * 10 : 0;
+      setLastBonus(bonus + streakBonus);
+      setPoints((p) => p + 100 + bonus + streakBonus);
+      setStreak((s) => s + 1);
+      buzz(30);
+      blip("good");
+    } else {
+      setLastBonus(0);
+      setStreak(0);
+      buzz([60, 40, 60]);
+      blip("bad");
     }
   }
 
@@ -55,38 +69,54 @@ export default function TriviaGame({ onFinish }) {
   const answered = selected !== null;
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5 border border-deep-700/80">
-      <div className="flex items-center justify-between text-xs text-slate-400">
-        <span className="px-2.5 py-1 rounded-full bg-gold-500/10 text-gold-400 border border-gold-500/20 font-bold uppercase">
+    <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
+      <div className="flex items-center gap-1.5 justify-center" aria-hidden>
+        {triviaDatabase.map((_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-5 bg-mint-400" : i === index ? "w-7 bg-gold-400 anim-glow" : "w-3 bg-white/15"}`} />
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-royal-500/25 to-gold-500/20 text-gold-200 border border-gold-500/25 font-bold uppercase tracking-wide truncate max-w-[45%]">
           {q.tag}
         </span>
-        <span>Pregunta {index + 1} de {triviaDatabase.length}</span>
-        <span className={`font-mono font-bold ${timeLeft <= 5 ? "text-rose-400" : "text-gold-400"}`}>{Math.ceil(timeLeft)}s</span>
+        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{triviaDatabase.length}</span>
+        <span className={`px-3 py-1.5 rounded-full font-mono font-black shrink-0 ${timeLeft <= 5 ? "bg-coral-500/20 text-coral-400 border border-coral-500/40" : "bg-gold-500/15 text-gold-300 border border-gold-500/25"}`}>{Math.ceil(timeLeft)}s</span>
       </div>
 
-      <h3 className="text-lg sm:text-xl font-serif font-bold text-white leading-relaxed">{q.question}</h3>
+      {msg && locked === false && (
+        <p className="text-center text-xs font-black uppercase tracking-widest text-royal-300">{msg} · x{streak}</p>
+      )}
 
-      <div className="w-full bg-deep-950 rounded-full h-1.5 overflow-hidden">
-        <div className={`h-full ${timeLeft <= 5 ? "bg-rose-500" : "bg-gold-400"}`} style={{ width: `${(timeLeft / 20) * 100}%` }} />
+      <h3 className="text-[17px] sm:text-xl font-serif font-bold text-white leading-relaxed">{q.question}</h3>
+      <p className="text-[11px] font-mono text-royal-300/90">{q.article}</p>
+
+      <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+        <div className={`h-full rounded-full transition-all ${timeLeft <= 5 ? "bg-gradient-to-r from-coral-500 to-coral-400" : "bg-gradient-to-r from-gold-500 via-gold-400 to-mint-400"}`} style={{ width: `${(timeLeft / 20) * 100}%` }} />
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-2.5">
         {q.options.map((opt, idx) => {
-          let cls = "border border-deep-700 bg-deep-900/80 hover:bg-deep-850 hover:border-gold-500/50 text-slate-200";
+          let cls = "border border-white/12 bg-white/[0.06] active:bg-white/[0.12] text-slate-100 shadow-card";
+          let badge = "bg-white/10 border-white/15 text-gold-200";
           if (answered) {
-            if (opt.correct) cls = "border-2 border-emeraldLaw-500 bg-emeraldLaw-500/15 text-emerald-200";
-            else if (idx === selected) cls = "border-2 border-rose-500 bg-rose-500/15 text-rose-200";
-            else cls = "border border-deep-800/40 bg-deep-950/40 text-slate-600";
+            if (opt.correct) {
+              cls = "border-2 border-mint-400 bg-mint-500/15 text-emerald-100 shadow-glow-mint anim-pop";
+              badge = "bg-mint-400 text-ink-950 border-mint-400";
+            } else if (idx === selected) {
+              cls = "border-2 border-coral-500 bg-coral-500/15 text-rose-100 anim-shake";
+              badge = "bg-coral-500 text-white border-coral-500";
+            } else cls = "border border-white/5 bg-white/[0.02] text-slate-500";
           }
           return (
             <button
               key={idx}
               disabled={answered}
               onClick={() => handleAnswer(idx)}
-              className={`w-full text-left p-4 rounded-2xl transition flex items-start gap-3 text-sm ${cls}`}
+              className={`arena-opt w-full text-left p-4 rounded-2xl transition flex items-start gap-3 text-[15px] leading-snug ${cls}`}
             >
-              <span className="w-7 h-7 rounded-xl bg-deep-850 border border-deep-700 flex items-center justify-center text-xs font-bold shrink-0">
-                {String.fromCharCode(65 + idx)}
+              <span className={`w-8 h-8 rounded-xl border flex items-center justify-center text-sm font-black shrink-0 ${badge}`}>
+                {answered && opt.correct ? "✓" : String.fromCharCode(65 + idx)}
               </span>
               <span>{opt.text}</span>
             </button>
@@ -95,16 +125,19 @@ export default function TriviaGame({ onFinish }) {
       </div>
 
       {answered && (
-        <div className={`p-4 rounded-2xl border text-sm ${selected >= 0 && q.options[selected].correct ? "border-emeraldLaw-500/40 bg-emeraldLaw-800/20 text-emerald-200" : "border-rose-500/40 bg-rose-950/30 text-rose-200"}`}>
-          <p className="text-slate-300">{q.options.find((o) => o.correct).why}</p>
+        <div className={`p-4 rounded-2xl border text-sm anim-pop ${selected >= 0 && q.options[selected].correct ? "border-mint-400/40 bg-mint-500/10 text-emerald-100" : "border-coral-500/40 bg-coral-500/10 text-rose-100"}`}>
+          {selected >= 0 && q.options[selected].correct && lastBonus > 0 && (
+            <p className="font-black text-gold-300 mb-1">+100 pts +{lastBonus} bono{streak >= 3 ? " de racha" : " rapidez"}</p>
+          )}
+          <p className="text-slate-200/90 leading-relaxed">{q.options.find((o) => o.correct).why}</p>
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-2 border-t border-deep-800/80">
-        <span className="text-xs text-slate-500">Puntaje acumulado: <strong className="text-emeraldLaw-400">{points}</strong></span>
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10 safe-bottom sticky bottom-0 bg-transparent">
+        <span className="text-xs text-slate-300">Total <strong className="text-mint-300 font-mono text-base">{points}</strong></span>
         {answered && (
-          <button onClick={next} className="px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-gold-500 to-amber-600 text-deep-950 text-sm">
-            {index === triviaDatabase.length - 1 ? "Finalizar" : "Siguiente"}
+          <button onClick={next} className="arena-btn flex-1 sm:flex-none px-6 rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
+            {index === triviaDatabase.length - 1 ? "Ver mi resultado →" : "Siguiente →"}
           </button>
         )}
       </div>

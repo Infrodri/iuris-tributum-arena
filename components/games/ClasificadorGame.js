@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { classifierItems } from "../../lib/gameData";
+import { buzz, blip } from "../arena";
 
 export default function ClasificadorGame({ onFinish }) {
   const [index, setIndex] = useState(0);
@@ -16,6 +17,11 @@ export default function ClasificadorGame({ onFinish }) {
     if (isCorrect) {
       setPoints((p) => p + 75);
       setCorrectCount((c) => c + 1);
+      buzz(30);
+      blip("good");
+    } else {
+      buzz([60, 40, 60]);
+      blip("bad");
     }
     setFeedback({ isCorrect, article: item.article, sanction: item.sanction, type: item.type });
 
@@ -31,42 +37,49 @@ export default function ClasificadorGame({ onFinish }) {
   }
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5 border border-deep-700/80">
-      <div className="flex items-center justify-between text-xs text-slate-400">
-        <span>Conducta {index + 1} de {classifierItems.length}</span>
-        <span className="font-bold text-gold-400">Aciertos: {correctCount} / {classifierItems.length}</span>
+    <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
+      <div className="flex items-center gap-1.5 justify-center" aria-hidden>
+        {classifierItems.map((_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-4 bg-mint-400" : i === index ? "w-6 bg-gold-400 anim-glow" : "w-2.5 bg-white/15"}`} />
+        ))}
+      </div>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-slate-400 font-mono">{index + 1}/{classifierItems.length}</span>
+        <span className="font-black text-gold-300">★ {correctCount} aciertos</span>
       </div>
 
-      <p className="text-base sm:text-lg font-serif font-bold text-white leading-relaxed bg-deep-950 p-5 rounded-2xl border border-deep-800">
-        "{item.behavior}"
+      <p className="text-[16px] sm:text-lg font-serif font-bold text-white leading-relaxed bg-white/[0.05] p-5 rounded-2xl border border-white/10">
+        “{item.behavior}”
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         <button
           disabled={!!feedback}
           onClick={() => classify("contravencion")}
-          className="p-4 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-bold text-sm"
+          className="arena-btn p-4 rounded-2xl bg-gradient-to-r from-amber-500/25 to-gold-500/15 active:scale-[0.98] border-2 border-amber-400/50 text-amber-200 font-black text-[16px] flex items-center justify-center gap-2 transition disabled:opacity-60"
         >
-          Contravención Tributaria
+          <span className="text-xl">📋</span> Contravención
+          <span className="block text-[11px] font-medium opacity-80 w-full">Vía administrativa</span>
         </button>
         <button
           disabled={!!feedback}
           onClick={() => classify("delito")}
-          className="p-4 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-300 font-bold text-sm"
+          className="arena-btn p-4 rounded-2xl bg-gradient-to-r from-coral-600/30 to-coral-500/15 active:scale-[0.98] border-2 border-coral-500/50 text-rose-100 font-black text-[16px] flex items-center justify-center gap-2 transition disabled:opacity-60"
         >
-          Delito Tributario
+          <span className="text-xl">🚨</span> Delito
+          <span className="block text-[11px] font-medium opacity-80 w-full">Vía penal</span>
         </button>
       </div>
 
       {feedback && (
-        <div className={`p-4 rounded-xl text-sm ${feedback.isCorrect ? "border border-emeraldLaw-500/40 bg-emeraldLaw-800/20 text-emerald-200" : "border border-rose-500/40 bg-rose-950/30 text-rose-200"}`}>
-          <strong>{feedback.isCorrect ? "¡Correcto!" : "Incorrecto."}</strong> Es un(a) <strong>{feedback.type.toUpperCase()}</strong>.<br />
-          <span className="text-slate-300">{feedback.article} — {feedback.sanction}</span>
+        <div className={`p-4 rounded-2xl text-sm anim-pop ${feedback.isCorrect ? "border-2 border-mint-400 bg-mint-500/15 text-emerald-100" : "border-2 border-coral-500 bg-coral-500/15 text-rose-100 anim-shake"}`}>
+          <strong className="text-base">{feedback.isCorrect ? "✓ ¡Correcto! +75" : "✗ Incorrecto"}</strong> · {feedback.type.toUpperCase()}<br />
+          <span className="opacity-90">{feedback.article} — {feedback.sanction}</span>
         </div>
       )}
 
-      <div className="text-xs text-slate-500 pt-2 border-t border-deep-800/80">
-        Puntaje acumulado: <strong className="text-emeraldLaw-400">{points}</strong>
+      <div className="text-xs text-slate-300 pt-3 border-t border-white/10 safe-bottom">
+        Total <strong className="text-mint-300 font-mono text-base">{points}</strong> pts
       </div>
     </div>
   );

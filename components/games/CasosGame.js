@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { legalCases } from "../../lib/gameData";
+import { buzz, blip } from "../arena";
 
 export default function CasosGame({ onFinish }) {
   const [index, setIndex] = useState(0);
@@ -12,7 +13,14 @@ export default function CasosGame({ onFinish }) {
   function choose(idx) {
     if (answeredIdx !== null) return;
     setAnsweredIdx(idx);
-    if (c.options[idx].correct) setPoints((p) => p + 150);
+    if (c.options[idx].correct) {
+      setPoints((p) => p + 150);
+      buzz(30);
+      blip("good");
+    } else {
+      buzz([60, 40, 60]);
+      blip("bad");
+    }
   }
 
   function next() {
@@ -26,45 +34,51 @@ export default function CasosGame({ onFinish }) {
   }
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5 border border-deep-700/80">
-      <div className="flex items-center justify-between text-xs text-slate-400">
-        <span className="px-2.5 py-1 rounded-full bg-emeraldLaw-400/10 text-emeraldLaw-400 border border-emeraldLaw-400/20 font-bold uppercase">
+    <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 anim-rise">
+      <div className="flex items-center gap-1.5 justify-center" aria-hidden>
+        {legalCases.map((_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-all ${i < index ? "w-5 bg-mint-400" : i === index ? "w-7 bg-gold-400 anim-glow" : "w-3 bg-white/15"}`} />
+        ))}
+      </div>
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-mint-500/25 to-royal-500/25 text-mint-300 border border-mint-400/25 font-bold uppercase tracking-wide truncate max-w-[70%]">
           {c.badge}
         </span>
-        <span>Caso {index + 1} de {legalCases.length}</span>
+        <span className="text-slate-400 font-mono shrink-0">{index + 1}/{legalCases.length}</span>
       </div>
 
-      <h3 className="text-lg sm:text-xl font-serif font-bold text-white">{c.title}</h3>
-      <p className="text-sm text-slate-300 bg-deep-950/70 p-4 rounded-xl border border-deep-800 leading-relaxed">{c.facts}</p>
-      <p className="text-sm font-semibold text-white">{c.dilemma}</p>
+      <h3 className="text-[17px] sm:text-xl font-serif font-bold text-white leading-snug">{c.title}</h3>
+      <p className="text-[15px] text-slate-100 bg-white/[0.05] p-4 rounded-2xl border border-white/10 leading-relaxed">{c.facts}</p>
+      <p className="text-[15px] font-bold text-gold-200">{c.dilemma}</p>
 
       <div className="grid grid-cols-1 gap-2.5">
         {c.options.map((opt, idx) => {
-          let cls = "border border-deep-800 bg-deep-900/60 hover:bg-deep-850 hover:border-gold-500/40 text-slate-200";
+          let cls = "border border-white/12 bg-white/[0.06] active:bg-white/[0.12] text-slate-100";
           if (answeredIdx !== null) {
-            if (opt.correct) cls = "border-2 border-emeraldLaw-500 bg-emeraldLaw-500/15 text-emerald-200";
-            else if (idx === answeredIdx) cls = "border-2 border-rose-500 bg-rose-500/15 text-rose-200";
-            else cls = "border border-deep-800/40 bg-deep-950/30 text-slate-600";
+            if (opt.correct) cls = "border-2 border-mint-400 bg-mint-500/15 text-emerald-100 anim-pop";
+            else if (idx === answeredIdx) cls = "border-2 border-coral-500 bg-coral-500/15 text-rose-100 anim-shake";
+            else cls = "border border-white/5 bg-white/[0.02] text-slate-500";
           }
           return (
-            <button key={idx} disabled={answeredIdx !== null} onClick={() => choose(idx)} className={`w-full text-left p-4 rounded-xl transition text-sm ${cls}`}>
-              <span className="font-bold text-gold-400 mr-2">[Dictamen {idx + 1}]</span> {opt.label}
+            <button key={idx} disabled={answeredIdx !== null} onClick={() => choose(idx)} className={`arena-opt w-full text-left p-4 rounded-2xl transition text-[15px] leading-snug ${cls}`}>
+              <span className="font-black text-gold-300 mr-2">⚖ {idx + 1}</span> {opt.label}
             </button>
           );
         })}
       </div>
 
       {answeredIdx !== null && (
-        <div className={`p-4 rounded-xl text-sm ${c.options[answeredIdx].correct ? "border border-emeraldLaw-500/40 bg-emeraldLaw-800/20 text-emerald-200" : "border border-rose-500/40 bg-rose-950/30 text-rose-200"}`}>
+        <div className={`p-4 rounded-2xl text-sm anim-pop ${c.options[answeredIdx].correct ? "border border-mint-400/40 bg-mint-500/10 text-emerald-100" : "border border-coral-500/40 bg-coral-500/10 text-rose-100"}`}>
+          {c.options[answeredIdx].correct && <p className="font-black text-gold-300 mb-1">+150 pts · Dictamen correcto</p>}
           {c.options.find((o) => o.correct).dictamen}
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-2 border-t border-deep-800/80">
-        <span className="text-xs text-slate-500">Puntaje acumulado: <strong className="text-emeraldLaw-400">{points}</strong></span>
+      <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/10 safe-bottom">
+        <span className="text-xs text-slate-300">Total <strong className="text-mint-300 font-mono text-base">{points}</strong></span>
         {answeredIdx !== null && (
-          <button onClick={next} className="px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-gold-500 to-amber-600 text-deep-950 text-sm">
-            {index === legalCases.length - 1 ? "Finalizar" : "Siguiente Caso"}
+          <button onClick={next} className="arena-btn flex-1 sm:flex-none px-6 rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
+            {index === legalCases.length - 1 ? "Ver mi resultado →" : "Siguiente caso →"}
           </button>
         )}
       </div>

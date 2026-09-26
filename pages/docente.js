@@ -97,35 +97,35 @@ export default function Docente() {
   return (
     <>
       <Head><title>Iuris Tributum Arena · Docente</title></Head>
-      <main className="min-h-screen px-4 py-8 max-w-5xl mx-auto space-y-6">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <main className="min-h-[100dvh] px-3 sm:px-4 py-4 sm:py-8 max-w-6xl mx-auto space-y-5 w-full">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-serif font-bold text-white">Panel del Docente</h1>
-            <p className="text-xs text-slate-400">Proyecta esta pantalla — el ranking se actualiza solo.</p>
+            <h1 className="arena-title text-xl sm:text-2xl font-serif font-black">Panel del Docente</h1>
+            <p className="text-xs text-slate-300">Proyecta esta pantalla — el ranking se actualiza solo. <span className="font-mono text-gold-300">{ranking.length} en juego</span></p>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={newRoom} className="px-4 py-2 rounded-xl bg-deep-850 hover:bg-deep-800 border border-deep-700 text-slate-200 text-xs font-bold">
-              Nueva Sala
+          <div className="grid grid-cols-3 sm:flex items-center gap-2 w-full sm:w-auto">
+            <button onClick={newRoom} className="arena-btn px-3 sm:px-4 rounded-2xl bg-white/[0.07] border border-white/15 text-slate-100 text-xs font-black active:scale-95 transition">
+              Nueva sala
             </button>
-            <button onClick={resetRoom} className="px-4 py-2 rounded-xl bg-deep-850 hover:bg-deep-800 border border-rose-500/40 text-rose-300 text-xs font-bold">
-              Reiniciar Sala
+            <button onClick={resetRoom} className="arena-btn px-3 sm:px-4 rounded-2xl bg-coral-500/15 border border-coral-500/40 text-rose-200 text-xs font-black active:scale-95 transition">
+              Reiniciar
             </button>
-            <button onClick={finishSession} className="px-4 py-2 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-deep-950 text-xs font-bold">
-              Finalizar Sesión
+            <button onClick={finishSession} className="arena-btn px-3 sm:px-4 rounded-2xl bg-gradient-to-r from-gold-300 to-gold-600 text-ink-950 text-xs font-black shadow-glow-gold active:scale-95 transition">
+              Finalizar
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-panel rounded-3xl p-6 border border-gold-500/30 text-center space-y-4">
-            <div className="bg-white p-3 rounded-2xl inline-block">
-              {qrSrc && <img src={qrSrc} alt="QR de la sala" className="w-44 h-44" />}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="glass-panel rounded-3xl p-5 border border-gold-500/25 text-center space-y-3 anim-rise">
+            <div className="bg-white p-3 rounded-2xl inline-block shadow-card">
+              {qrSrc && <img src={qrSrc} alt="QR de la sala" className="w-36 h-36 sm:w-44 sm:h-44" />}
             </div>
             <div>
-              <span className="text-xs text-slate-400 block">Código de sala</span>
-              <span className="font-mono text-2xl font-black text-gold-400 tracking-widest">{room}</span>
+              <span className="text-[11px] uppercase tracking-widest text-slate-300 block font-black">Código de sala</span>
+              <span className="font-mono text-[26px] sm:text-3xl font-black text-gold-300 tracking-[0.15em]">{room}</span>
             </div>
-            <p className="text-[11px] text-slate-500 break-all">{joinUrl}</p>
+            <p className="text-[11px] text-slate-400 break-all font-mono">{joinUrl}</p>
           </div>
 
           <div className="md:col-span-2 glass-panel rounded-3xl border border-deep-700/80 overflow-hidden">

@@ -34,49 +34,40 @@ export default function FlashcardsGame({ onFinish }) {
   }
 
   return (
-    <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-5 border border-deep-700/80 text-center">
-      <p className="text-xs text-slate-400">Modo estudio · toca la tarjeta para revelar la respuesta (10 pts/tarjeta vista)</p>
+    <div className="glass-panel rounded-3xl p-4 sm:p-7 space-y-4 border border-royal-500/20 text-center anim-rise">
+      <p className="text-xs text-slate-300">Modo estudio · toca la tarjeta para girarla</p>
 
-      <div className="flex justify-center py-2">
-        <div
-          onClick={flip}
-          className="cursor-pointer w-full max-w-md min-h-[220px] rounded-3xl p-6 flex flex-col justify-between items-center text-center border-2 transition-colors"
-          style={{
-            background: flipped
-              ? "linear-gradient(135deg, rgba(20,29,51,0.9), rgba(6,20,15,0.9))"
-              : "linear-gradient(135deg, rgba(20,29,51,0.85), rgba(14,20,36,0.95))",
-            borderColor: flipped ? "rgba(16,185,129,0.5)" : "rgba(245,158,11,0.35)"
-          }}
-        >
-          {!flipped ? (
-            <>
-              <span className="text-xs font-bold uppercase tracking-wider bg-gold-500/20 text-gold-300 border border-gold-500/30 px-3 py-1 rounded-full">
+      <div className="flex justify-center py-1 flip-scene">
+        <div className="w-full max-w-md">
+          <div onClick={flip} className={`flip-inner relative w-full min-h-[260px] cursor-pointer ${flipped ? "flipped" : ""}`}>
+            <div className="flip-face absolute inset-0 rounded-3xl p-6 flex flex-col justify-between items-center text-center border-2 border-gold-500/40 bg-gradient-to-br from-ink-800 via-ink-900 to-ink-950 shadow-card">
+              <span className="text-[11px] font-black uppercase tracking-widest bg-gold-500/20 text-gold-200 border border-gold-500/30 px-3 py-1 rounded-full">
                 {card.category}
               </span>
-              <h4 className="text-lg font-serif font-bold text-white leading-snug px-2">{card.question}</h4>
-              <span className="text-xs text-slate-400">Toca para ver el dictamen</span>
-            </>
-          ) : (
-            <>
-              <span className="text-xs font-bold uppercase tracking-wider bg-emeraldLaw-500/20 text-emeraldLaw-400 border border-emeraldLaw-500/30 px-3 py-1 rounded-full">
+              <h4 className="text-[17px] font-serif font-bold text-white leading-snug px-1">{card.question}</h4>
+              <span className="arena-btn px-5 py-2 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-200 text-xs font-black">👆 Toca para revelar</span>
+            </div>
+            <div className="flip-face flip-back absolute inset-0 rounded-3xl p-6 flex flex-col justify-between items-center text-center border-2 border-mint-400/50 bg-gradient-to-br from-emerald-950 via-ink-900 to-ink-950 shadow-glow-mint">
+              <span className="text-[11px] font-black uppercase tracking-widest bg-mint-500/20 text-mint-300 border border-mint-400/30 px-3 py-1 rounded-full">
                 {card.article}
               </span>
-              <p className="text-sm text-slate-200 leading-relaxed px-2">{card.answer}</p>
-              <span className="text-xs text-slate-400">Toca para volver</span>
-            </>
-          )}
+              <p className="text-[15px] text-emerald-50 leading-relaxed px-1">{card.answer}</p>
+              <span className="text-[11px] text-slate-400">Toca para volver · +10 pts por tarjeta vista</span>
+            </div>
+          </div>
+          <div className="h-[260px]" aria-hidden />
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-4">
-        <button onClick={prev} disabled={index === 0} className="p-3 rounded-xl bg-deep-900 border border-deep-800 text-slate-300 disabled:opacity-30">
-          <i className="ph-bold ph-caret-left text-xl"></i>
+      <div className="flex items-center justify-between gap-3 safe-bottom">
+        <button onClick={prev} disabled={index === 0} className="arena-btn w-14 rounded-2xl bg-white/[0.07] border border-white/15 text-slate-100 disabled:opacity-30 text-xl active:scale-95 transition" aria-label="Anterior">
+          ←
         </button>
-        <span className="text-xs font-bold font-mono text-gold-400 bg-deep-900 px-4 py-2 rounded-xl border border-deep-800">
-          {index + 1} / {flashcardsData.length}
+        <span className="text-xs font-black font-mono text-gold-300 bg-white/[0.06] px-4 py-2.5 rounded-xl border border-white/10">
+          {index + 1} / {flashcardsData.length} · {seen.size} vistas
         </span>
-        <button onClick={next} className="px-5 py-2.5 rounded-xl font-bold bg-gradient-to-r from-gold-500 to-amber-600 text-deep-950 text-sm">
-          {isLast ? "Finalizar" : "Siguiente"}
+        <button onClick={next} className="arena-btn flex-1 max-w-[180px] rounded-2xl font-black bg-gradient-to-r from-gold-400 to-gold-600 text-ink-950 text-[15px] shadow-glow-gold active:scale-95 transition">
+          {isLast ? "Finalizar ✓" : "Siguiente →"}
         </button>
       </div>
     </div>
